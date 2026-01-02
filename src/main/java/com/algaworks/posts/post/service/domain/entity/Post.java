@@ -6,7 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -21,5 +25,13 @@ public class Post {
   private String author;
   private String title;
   private String body;
+  private Integer wordCount;
+  private BigDecimal calculatedValue;
+
+  @CreationTimestamp
+  private OffsetDateTime createdAt;
+
+  @UpdateTimestamp
+  private OffsetDateTime updatedAt;
 
 }

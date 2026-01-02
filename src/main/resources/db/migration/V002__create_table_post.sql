@@ -1,7 +1,11 @@
 CREATE TABLE IF NOT EXISTS post (
     id VARCHAR(36) NOT NULL,
-    title VARCHAR(254),
-    body CLOB,
-    author VARCHAR(254),
+    title VARCHAR(254) NOT NULL,
+    body CLOB NOT NULL,
+    author VARCHAR(254) NOT NULL,
+    word_count INTEGER,
+    calculated_value DECIMAL(19, 2),
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
     PRIMARY KEY (id)
 );

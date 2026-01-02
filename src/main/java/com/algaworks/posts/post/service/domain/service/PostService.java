@@ -2,7 +2,7 @@ package com.algaworks.posts.post.service.domain.service;
 
 import com.algaworks.posts.post.service.domain.entity.Post;
 import com.algaworks.posts.post.service.domain.repository.PostRepository;
-import com.algaworks.posts.post.service.domain.vo.MessageToCalculatePostCost;
+import com.algaworks.posts.post.service.domain.dto.CalculatePostCost;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class PostService {
 
   private void sendPostToProcessCost(Post post) {
     log.info("sending message id {} to queue", post.getId());
-    Object payload = MessageToCalculatePostCost.builder()
+    Object payload = CalculatePostCost.builder()
       .postId(post.getId().toString())
       .postBody(post.getBody())
       .build();
