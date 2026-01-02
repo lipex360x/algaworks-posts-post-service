@@ -11,5 +11,5 @@ public class PostSummaryOutput {
   private UUID id;
   private String author;
   private String title;
-  private String body;
+  private String summary;
 }

@@ -6,15 +6,19 @@ import com.algaworks.posts.post.service.common.UUIDGenerator;
 import com.algaworks.posts.post.service.domain.entity.Post;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 public class PostAssembler {
+
+  private final Integer MAX_SUMMARY_BODY_LINES = 3;
 
   public PostSummaryOutput toSummaryModel(Post post) {
     return PostSummaryOutput.builder()
       .id(post.getId())
       .author(post.getAuthor())
       .title(post.getTitle())
-      .body(post.getBody())
+      .summary(summariseBody(post.getBody()))
       .build();
   }
 
@@ -25,5 +29,11 @@ public class PostAssembler {
       .title(input.getTitle())
       .body(input.getBody())
       .build();
+  }
+
+  private String summariseBody(String body) {
+    return body.lines()
+      .limit(MAX_SUMMARY_BODY_LINES)
+      .collect(Collectors.joining("\n"));
   }
 }
