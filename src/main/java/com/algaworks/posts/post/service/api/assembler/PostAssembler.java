@@ -1,4 +1,4 @@
-package com.algaworks.posts.post.service.api.mapper;
+package com.algaworks.posts.post.service.api.assembler;
 
 import com.algaworks.posts.post.service.api.model.PostInput;
 import com.algaworks.posts.post.service.api.model.PostSummaryOutput;
