@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CalculatePostCost {
+public class CalculatePostCostDTO {
   private String postId;
   private String postBody;
 }

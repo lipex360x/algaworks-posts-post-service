@@ -2,7 +2,7 @@ package com.algaworks.posts.post.service.domain.service;
 
 import com.algaworks.posts.post.service.domain.entity.Post;
 import com.algaworks.posts.post.service.domain.repository.PostRepository;
-import com.algaworks.posts.post.service.domain.dto.CalculatePostCost;
+import com.algaworks.posts.post.service.domain.dto.CalculatePostCostDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +10,8 @@ import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import static com.algaworks.posts.post.service.infra.config.rabbitmq.RabbitMQConfig.DIRECT_EXCHANGE_POST_PROCESSING;
-import static com.algaworks.posts.post.service.infra.config.rabbitmq.RabbitMQConfig.ROUTING_KEY_POST_PROCESSING;
+import static com.algaworks.posts.post.service.infra.rabbitmq.config.RabbitMQConfig.DIRECT_EXCHANGE_POST_PROCESSING;
+import static com.algaworks.posts.post.service.infra.rabbitmq.config.RabbitMQConfig.ROUTING_KEY_POST_PROCESSING;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class PostService {
 
   private void sendPostToProcessCost(Post post) {
     log.info("sending message id {} to queue", post.getId());
-    Object payload = CalculatePostCost.builder()
+    Object payload = CalculatePostCostDTO.builder()
       .postId(post.getId().toString())
       .postBody(post.getBody())
       .build();

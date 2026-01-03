@@ -1,4 +1,4 @@
-package com.algaworks.posts.post.service.infra.config.rabbitmq;
+package com.algaworks.posts.post.service.infra.rabbitmq.config;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;

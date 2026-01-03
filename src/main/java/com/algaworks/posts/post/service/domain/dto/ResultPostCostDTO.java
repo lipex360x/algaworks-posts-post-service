@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 @Builder
-public class ResultPostCost {
+public class ResultPostCostDTO {
   private String postId;
   private Integer wordCount;
   private BigDecimal calculatedValue;

@@ -1,4 +1,4 @@
-package com.algaworks.posts.post.service.infra.config.rabbitmq;
+package com.algaworks.posts.post.service.infra.rabbitmq.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Binding;
@@ -19,8 +19,12 @@ import java.util.Map;
 @Configuration
 public class RabbitMQConfig {
 
-  public static final String DIRECT_EXCHANGE_POST_PROCESSING = "text-processor-service.post-processing.v1.e";
-  public static final String DLQ_POST_PROCESSING = "text-processor-service.post-processing.v1.dlq";
+  public static final String DIRECT_EXCHANGE_POST_PROCESSING = "text-processor.post-processing.v1.e";
+
+  public static final String DLQ_POST_PROCESSING_RESULT = "post-service.post-processing-result.v1.dlq";
+  public static final String QUEUE_POST_PROCESSING_RESULT = "post-service.post-processing-result.v1.q";
+  public static final String ROUTING_KEY_POST_PROCESSING_RESULT = "post-service.post-processing-result.v1.r";
+
   public static final String QUEUE_POST_PROCESSING = "text-processor-service.post-processing.v1.q";
   public static final String ROUTING_KEY_POST_PROCESSING = "text-processor-service.post-processing.v1.r";
 
@@ -41,26 +45,26 @@ public class RabbitMQConfig {
 
   @Bean
   public Queue deadLetterQueuePostProcessing() {
-    return QueueBuilder.durable(DLQ_POST_PROCESSING).build();
+    return QueueBuilder.durable(DLQ_POST_PROCESSING_RESULT).build();
   }
 
   @Bean
-  public Queue queuePostProcessing() {
+  public Queue queuePostProcessingResult() {
     Map<String, Object> args = new HashMap<>();
     args.put("x-dead-letter-exchange", "");
-    args.put("x-dead-letter-routing-key", DLQ_POST_PROCESSING);
+    args.put("x-dead-letter-routing-key", DLQ_POST_PROCESSING_RESULT);
     return QueueBuilder
-      .durable(QUEUE_POST_PROCESSING)
+      .durable(QUEUE_POST_PROCESSING_RESULT)
       .withArguments(args)
       .build();
   }
 
   @Bean
-  public Binding bindingPostProcessing(DirectExchange directExchangePostProcessing, Queue queuePostProcessing) {
+  public Binding bindingPostProcessing(DirectExchange directExchangePostProcessing, Queue queuePostProcessingResult) {
     return BindingBuilder
-      .bind(queuePostProcessing)
+      .bind(queuePostProcessingResult)
       .to(directExchangePostProcessing)
-      .with(ROUTING_KEY_POST_PROCESSING);
+      .with(ROUTING_KEY_POST_PROCESSING_RESULT);
   }
 
 }
