@@ -1,5 +1,6 @@
 package com.algaworks.posts.post.service.domain.entity;
 
+import com.algaworks.posts.post.service.domain.dto.ResultPostCostDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -33,5 +34,10 @@ public class Post {
 
   @UpdateTimestamp
   private OffsetDateTime updatedAt;
+
+  public void updatePostCost(ResultPostCostDTO resultPostCostDTO) {
+    setWordCount(resultPostCostDTO.getWordCount());
+    setCalculatedValue(resultPostCostDTO.getCalculatedValue());
+  }
 
 }

@@ -1,4 +1,4 @@
-package com.algaworks.posts.post.service.infra.rabbitmq.config;
+package com.algaworks.posts.post.service.infra.rabbitmq;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Binding;
@@ -44,7 +44,7 @@ public class RabbitMQConfig {
   }
 
   @Bean
-  public Queue deadLetterQueuePostProcessing() {
+  public Queue dlqPostProcessing() {
     return QueueBuilder.durable(DLQ_POST_PROCESSING_RESULT).build();
   }
 
