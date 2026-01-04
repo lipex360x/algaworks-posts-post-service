@@ -1,6 +1,7 @@
 package com.algaworks.posts.post.service.api.assembler;
 
 import com.algaworks.posts.post.service.api.model.PostInput;
+import com.algaworks.posts.post.service.api.model.PostOutput;
 import com.algaworks.posts.post.service.api.model.PostSummaryOutput;
 import com.algaworks.posts.post.service.common.UUIDGenerator;
 import com.algaworks.posts.post.service.domain.entity.Post;
@@ -19,6 +20,17 @@ public class PostAssembler {
       .author(post.getAuthor())
       .title(post.getTitle())
       .summary(summariseBody(post.getBody()))
+      .build();
+  }
+
+  public PostOutput toModel(Post post) {
+    return PostOutput.builder()
+      .id(post.getId())
+      .author(post.getAuthor())
+      .title(post.getTitle())
+      .wordCount(post.getWordCount())
+      .calculatedValue(post.getCalculatedValue())
+      .body(post.getBody())
       .build();
   }
 

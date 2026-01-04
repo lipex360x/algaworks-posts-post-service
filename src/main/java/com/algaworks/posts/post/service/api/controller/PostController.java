@@ -4,6 +4,7 @@ import com.algaworks.posts.post.service.api.assembler.PostAssembler;
 import com.algaworks.posts.post.service.api.exception.InvalidRequestException;
 import com.algaworks.posts.post.service.api.helper.ResourceUriHelper;
 import com.algaworks.posts.post.service.api.model.PostInput;
+import com.algaworks.posts.post.service.api.model.PostOutput;
 import com.algaworks.posts.post.service.api.model.PostSummaryOutput;
 import com.algaworks.posts.post.service.domain.entity.Post;
 import com.algaworks.posts.post.service.domain.repository.PostRepository;
@@ -15,10 +16,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -44,6 +49,12 @@ public class PostController {
   ) {
     Page<Post> posts = postRepository.findAll(pageable);
     return posts.map(postAssembler::toSummaryModel);
+  }
+
+  @GetMapping("/{postId}")
+  public PostOutput findOne(@PathVariable UUID postId) {
+    Post post = postService.findOrFail(postId);
+    return postAssembler.toModel(post);
   }
 
   private void validateInput(PostInput input) {
