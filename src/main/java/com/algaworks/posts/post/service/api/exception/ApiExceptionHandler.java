@@ -2,9 +2,11 @@ package com.algaworks.posts.post.service.api.exception;
 
 import com.algaworks.posts.post.service.domain.exception.EntityNotFoundException;
 import com.algaworks.posts.post.service.domain.exception.InvalidFilterPropertyException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -59,6 +61,23 @@ public class ApiExceptionHandler {
     problemDetail.setDetail(e.getMessage());
     problemDetail.setType(URI.create("/errors/invalid-sort"));
     return problemDetail;
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ProblemDetail handleNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
+    if (ex.getCause() instanceof UnrecognizedPropertyException unrecognizedPropertyException) {
+      ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+      problem.setType(URI.create("/errors/unknown-property"));
+      problem.setTitle("Unknown property");
+      problem.setDetail("Request contains properties that are not allowed");
+      problem.setInstance(URI.create(request.getRequestURI()));
+      problem.setProperty("unknownProperty", unrecognizedPropertyException.getPropertyName());
+      problem.setProperty("allowedProperties", unrecognizedPropertyException.getKnownPropertyIds().stream()
+        .map(Object::toString)
+        .toList());
+      return problem;
+    }
+    return ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
