@@ -2,8 +2,11 @@ package com.algaworks.posts.post.service.api.exception;
 
 import com.algaworks.posts.post.service.domain.exception.EntityNotFoundException;
 import com.algaworks.posts.post.service.domain.exception.InvalidFilterPropertyException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -12,6 +15,8 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.nio.channels.ClosedChannelException;
+import java.util.List;
+import java.util.Map;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -38,15 +43,6 @@ public class ApiExceptionHandler {
     return problemDetail;
   }
 
-  @ExceptionHandler(InvalidRequestException.class)
-  public ProblemDetail handle(InvalidRequestException e) {
-    ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-    problemDetail.setTitle("Bad request");
-    problemDetail.setDetail("invalid field: " + e.getMessage());
-    problemDetail.setType(URI.create("/errors/bad-request"));
-    return problemDetail;
-  }
-
   @ExceptionHandler(EntityNotFoundException.class)
   public ProblemDetail handle(EntityNotFoundException e) {
     ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
@@ -63,6 +59,33 @@ public class ApiExceptionHandler {
     problemDetail.setDetail(e.getMessage());
     problemDetail.setType(URI.create("/errors/invalid-sort"));
     return problemDetail;
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ProblemDetail handle(
+    MethodArgumentNotValidException ex,
+    HttpServletRequest request
+  ) {
+    ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+    problem.setType(URI.create("/errors/invalid-request"));
+    problem.setTitle("Invalid request");
+    problem.setDetail("One or more fields are invalid");
+    problem.setInstance(URI.create(request.getRequestURI()));
+    List<Map<String, Object>> errors = ex.getBindingResult()
+      .getFieldErrors()
+      .stream()
+      .map(this::toFieldError)
+      .toList();
+    problem.setProperty("errors", errors);
+    return problem;
+  }
+
+  private Map<String, Object> toFieldError(FieldError fe) {
+    assert fe.getDefaultMessage() != null;
+    return Map.of(
+      "field", fe.getField(),
+      "message", fe.getDefaultMessage()
+    );
   }
 
 }
