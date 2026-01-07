@@ -86,5 +86,3 @@ GET /algaposts/api/posts/{id}
   "calculatedValue": 20.00
 }
 ```
-
----
